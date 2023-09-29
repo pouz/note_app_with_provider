@@ -1,0 +1,110 @@
+import 'dart:math';
+
+import 'package:flutter/material.dart';
+import 'package:note_app/features/store/store.dart';
+import 'package:note_app/models/note.dart';
+import 'package:note_app/screens/home_screen/home_screen.dart';
+import 'package:note_app/style/app_style.dart';
+import 'package:uuid/uuid.dart';
+
+class NoteEditorScreen extends StatefulWidget {
+  const NoteEditorScreen({
+    super.key,
+    this.note,
+  });
+
+  final Note? note;
+
+  @override
+  State<NoteEditorScreen> createState() => _NoteEditorScreenState();
+}
+
+class _NoteEditorScreenState extends State<NoteEditorScreen> {
+  int colorId = Random().nextInt(AppStyle.cardsColor.length);
+  String date = DateTime.now().toString();
+  bool _isUpdate = false;
+
+  final NoteStore _noteStore = NoteStore.instance;
+
+  late TextEditingController _titleController;
+  late TextEditingController _mainController;
+
+  @override
+  void initState() {
+    _titleController = TextEditingController();
+    _mainController = TextEditingController();
+
+    if (widget.note != null) {
+      _titleController.text = widget.note!.noteTitle as String;
+      _mainController.text = widget.note!.noteContent as String;
+      _isUpdate = true;
+    }
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppStyle.cardsColor[colorId],
+      appBar: AppBar(
+        backgroundColor: AppStyle.cardsColor[colorId],
+        elevation: 0.0,
+        title: const Text('Add a new Note'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _titleController,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                hintText: 'Note Title',
+              ),
+              style: AppStyle.mainTitle,
+            ),
+            const SizedBox(height: 8.0),
+            Text(
+              date,
+              style: AppStyle.dateTitle,
+            ),
+            TextField(
+              controller: _mainController,
+              keyboardType: TextInputType.multiline,
+              maxLines: null,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                hintText: 'Note Content',
+              ),
+              style: AppStyle.mainTitle,
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          Note newNote = Note(
+            uid: _isUpdate ? widget.note!.uid : const Uuid().v4(),
+            noteTitle: _titleController.text,
+            creationDate: date,
+            noteContent: _mainController.text,
+            colorId: _isUpdate ? widget.note!.colorId : colorId,
+          );
+
+          Future<void> save =
+              _isUpdate ? _noteStore.update(newNote) : _noteStore.add(newNote);
+          save.then((value) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) {
+                return const HomeScreen();
+              }),
+            );
+          });
+        },
+        backgroundColor: AppStyle.accentColor,
+        child: const Icon(Icons.save),
+      ),
+    );
+  }
+}
