@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:note_app/features/store/store.dart';
 import 'package:note_app/models/note.dart';
+import 'package:note_app/providers/store_provider.dart';
 import 'package:note_app/screens/note_editor_screen/note_editor_screen.dart';
 import 'package:note_app/style/app_style.dart';
 
-class NoteReaderScreen extends StatefulWidget {
+class NoteReaderScreen extends ConsumerStatefulWidget {
   const NoteReaderScreen({
     super.key,
     required this.note,
@@ -13,14 +15,15 @@ class NoteReaderScreen extends StatefulWidget {
   final Note note;
 
   @override
-  State<NoteReaderScreen> createState() => _NoteReaderScreenState();
+  ConsumerState<NoteReaderScreen> createState() => _NoteReaderScreenState();
 }
 
-class _NoteReaderScreenState extends State<NoteReaderScreen> {
-  final NoteStore _noteStore = NoteStore.instance;
+class _NoteReaderScreenState extends ConsumerState<NoteReaderScreen> {
+  late final NoteStore _noteStoreProvider;
 
   @override
   void initState() {
+    _noteStoreProvider = ref.read(noteStoreProvider);
     super.initState();
   }
 
@@ -75,7 +78,7 @@ class _NoteReaderScreenState extends State<NoteReaderScreen> {
           // to delete
           FloatingActionButton(
             onPressed: () {
-              _noteStore
+              _noteStoreProvider
                   .delete(widget.note)
                   .then((value) => Navigator.pop(context));
             },

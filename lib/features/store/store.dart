@@ -1,5 +1,8 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:note_app/features/store/firebase/note_firebase_store.dart';
 import 'package:note_app/models/note.dart';
+import 'package:note_app/providers/store_provider.dart';
 
 const Stores kStore = Stores.firebase;
 
@@ -16,18 +19,16 @@ enum Stores {
   sharedPreferences,
 }
 
-class NoteStore implements StoreInterface<Note> {
-  // NoteStore.instance, NoteStore() 이 두가지로 접근 가능
-  static final NoteStore instance = NoteStore._internal();
-  factory NoteStore() => instance;
+class NoteStore extends ChangeNotifier implements StoreInterface<Note> {
+//  late final Provider<StoreInterface> _ref;
+  late final NoteFirebaseStore _storeProvider;
+  late final Ref ref;
 
-  late final StoreInterface _ref;
-
-  // 초기화 코드 사용 가능
-  NoteStore._internal() {
+  // 'ref' has to be passed by argument
+  NoteStore(this.ref) {
     switch (kStore) {
       case Stores.firebase:
-        _ref = NoteFirebaseStore.instance;
+        _storeProvider = ref.read(noteFirebaseProvider);
         break;
       case Stores.appwrite:
         break;
@@ -39,16 +40,16 @@ class NoteStore implements StoreInterface<Note> {
 
   @override
   Future<void> add(Note model) async {
-    return _ref.add(model);
+    return _storeProvider.add(model);
   }
 
   @override
   Future<void> delete(Note model) async {
-    return _ref.delete(model);
+    return _storeProvider.delete(model);
   }
 
   @override
   Future<void> update(Note model) async {
-    return _ref.update(model);
+    return _storeProvider.update(model);
   }
 }

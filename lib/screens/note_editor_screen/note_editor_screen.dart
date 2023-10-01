@@ -1,13 +1,15 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:note_app/features/store/store.dart';
 import 'package:note_app/models/note.dart';
+import 'package:note_app/providers/store_provider.dart';
 import 'package:note_app/screens/home_screen/home_screen.dart';
 import 'package:note_app/style/app_style.dart';
 import 'package:uuid/uuid.dart';
 
-class NoteEditorScreen extends StatefulWidget {
+class NoteEditorScreen extends ConsumerStatefulWidget {
   const NoteEditorScreen({
     super.key,
     this.note,
@@ -16,15 +18,15 @@ class NoteEditorScreen extends StatefulWidget {
   final Note? note;
 
   @override
-  State<NoteEditorScreen> createState() => _NoteEditorScreenState();
+  ConsumerState<NoteEditorScreen> createState() => _NoteEditorScreenState();
 }
 
-class _NoteEditorScreenState extends State<NoteEditorScreen> {
+class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
+  late final NoteStore _noteStoreProvider;
+
   int colorId = Random().nextInt(AppStyle.cardsColor.length);
   String date = DateTime.now().toString();
   bool _isUpdate = false;
-
-  final NoteStore _noteStore = NoteStore.instance;
 
   late TextEditingController _titleController;
   late TextEditingController _mainController;
@@ -39,6 +41,9 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
       _mainController.text = widget.note!.noteContent as String;
       _isUpdate = true;
     }
+
+    _noteStoreProvider = ref.read(noteStoreProvider);
+
     super.initState();
   }
 
@@ -91,8 +96,9 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
             colorId: _isUpdate ? widget.note!.colorId : colorId,
           );
 
-          Future<void> save =
-              _isUpdate ? _noteStore.update(newNote) : _noteStore.add(newNote);
+          Future<void> save = _isUpdate
+              ? _noteStoreProvider.update(newNote)
+              : _noteStoreProvider.add(newNote);
           save.then((value) {
             Navigator.push(
               context,
