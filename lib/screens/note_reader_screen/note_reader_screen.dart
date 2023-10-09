@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:note_app/features/store/store.dart';
 import 'package:note_app/models/note.dart';
 import 'package:note_app/providers/store_provider.dart';
-import 'package:note_app/screens/note_editor_screen/note_editor_screen.dart';
+import 'package:note_app/route.dart';
 import 'package:note_app/style/app_style.dart';
 
 class NoteReaderScreen extends ConsumerStatefulWidget {
@@ -61,16 +61,7 @@ class _NoteReaderScreenState extends ConsumerState<NoteReaderScreen> {
         children: [
           // to edit
           FloatingActionButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) {
-                  return NoteEditorScreen(
-                    note: widget.note,
-                  );
-                }),
-              );
-            },
+            onPressed: () => AppRoute.router.go('/editor', extra: widget.note),
             backgroundColor: AppStyle.accentColor,
             child: const Icon(Icons.edit),
           ),
@@ -80,7 +71,7 @@ class _NoteReaderScreenState extends ConsumerState<NoteReaderScreen> {
             onPressed: () {
               _noteStoreProvider
                   .delete(widget.note)
-                  .then((value) => Navigator.pop(context));
+                  .then((value) => AppRoute.router.go('/'));
             },
             backgroundColor: AppStyle.accentColor,
             child: const Icon(Icons.delete),

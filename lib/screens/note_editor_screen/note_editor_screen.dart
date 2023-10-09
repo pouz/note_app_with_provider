@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:note_app/features/store/store.dart';
 import 'package:note_app/models/note.dart';
 import 'package:note_app/providers/store_provider.dart';
-import 'package:note_app/screens/home_screen/home_screen.dart';
+import 'package:note_app/route.dart';
 import 'package:note_app/style/app_style.dart';
 import 'package:uuid/uuid.dart';
 
@@ -39,6 +39,8 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     if (widget.note != null) {
       _titleController.text = widget.note!.noteTitle as String;
       _mainController.text = widget.note!.noteContent as String;
+      // go_router의 extra로 빈 note가 넘어오기에 update 체크가 되어버림
+      //_isUpdate = true;
       _isUpdate = true;
     }
 
@@ -99,14 +101,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
           Future<void> save = _isUpdate
               ? _noteStoreProvider.update(newNote)
               : _noteStoreProvider.add(newNote);
-          save.then((value) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) {
-                return const HomeScreen();
-              }),
-            );
-          });
+          save.then((value) => AppRoute.router.go('/'));
         },
         backgroundColor: AppStyle.accentColor,
         child: const Icon(Icons.save),

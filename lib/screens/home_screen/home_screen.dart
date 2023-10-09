@@ -4,9 +4,7 @@ import 'package:note_app/features/login/firebase/firebase_login.dart';
 import 'package:note_app/features/store/firebase/note_firebase_store.dart';
 import 'package:note_app/features/store/store.dart';
 import 'package:note_app/models/note.dart';
-import 'package:note_app/screens/login_screen/login_screen.dart';
-import 'package:note_app/screens/note_editor_screen/note_editor_screen.dart';
-import 'package:note_app/screens/note_reader_screen/note_reader_screen.dart';
+import 'package:note_app/route.dart';
 import 'package:note_app/style/app_style.dart';
 import 'package:note_app/widgets/note_card.dart';
 
@@ -62,14 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const NoteEditorScreen(),
-            ),
-          );
-        },
+        onPressed: () => AppRoute.router.go('/editor'),
         label: const Text("Add Note"),
         icon: const Icon(Icons.add),
       ),
@@ -95,12 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
       highlightColor: Colors.transparent,
       onTap: () {
         FirebaseLogin.signOut().then(
-          (value) => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const LoginScreen(),
-            ),
-          ),
+          (value) => AppRoute.router.go('/login'),
         );
       },
       child: CircleAvatar(
@@ -144,19 +130,8 @@ class _HomeScreenState extends State<HomeScreen> {
             children: snapshot.data!.docs
                 .map(
                   (note) => noteCard(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) {
-                          return NoteReaderScreen(
-                            note: Note.fromFirestore(
-                              note,
-                              SnapshotOptions(),
-                            ),
-                          );
-                        }),
-                      );
-                    },
+                    onTap: () => AppRoute.router.go('/reader',
+                        extra: Note.fromFirestore(note, SnapshotOptions())),
                     doc: note,
                   ),
                 )

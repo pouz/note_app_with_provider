@@ -109,4 +109,14 @@ class Note {
         noteContent.hashCode ^
         colorId.hashCode;
   }
+
+  static Note empty() {
+    return Note(
+      uid: '',
+      noteTitle: '',
+      creationDate: '',
+      noteContent: '',
+      colorId: 0,
+    );
+  }
 }

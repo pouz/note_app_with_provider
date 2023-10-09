@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:note_app/features/login/firebase/firebase_login.dart';
-import 'package:note_app/screens/home_screen/home_screen.dart';
+import 'package:note_app/route.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -20,14 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
           TextButton(
             onPressed: () async {
               FirebaseLogin.signInWithGoogle().then(
-                (value) {
-                  return Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const HomeScreen(),
-                    ),
-                  );
-                },
+                (value) => AppRoute.router.go('/'),
               );
             },
             child: const Text('Google Sign in'),
