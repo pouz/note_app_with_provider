@@ -60,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => AppRoute.router.go('/editor'),
+        onPressed: () => AppRoute.router.go(AppRoute.editor),
         label: const Text("Add Note"),
         icon: const Icon(Icons.add),
       ),
@@ -86,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
       highlightColor: Colors.transparent,
       onTap: () {
         FirebaseLogin.signOut().then(
-          (value) => AppRoute.router.go('/login'),
+          (value) => AppRoute.router.go(AppRoute.login),
         );
       },
       child: CircleAvatar(
@@ -130,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: snapshot.data!.docs
                 .map(
                   (note) => noteCard(
-                    onTap: () => AppRoute.router.go('/reader',
+                    onTap: () => AppRoute.router.go(AppRoute.reader,
                         extra: Note.fromFirestore(note, SnapshotOptions())),
                     doc: note,
                   ),

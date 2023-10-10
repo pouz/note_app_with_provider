@@ -61,7 +61,8 @@ class _NoteReaderScreenState extends ConsumerState<NoteReaderScreen> {
         children: [
           // to edit
           FloatingActionButton(
-            onPressed: () => AppRoute.router.go('/editor', extra: widget.note),
+            onPressed: () =>
+                AppRoute.router.go(AppRoute.editor, extra: widget.note),
             backgroundColor: AppStyle.accentColor,
             child: const Icon(Icons.edit),
           ),
@@ -71,7 +72,7 @@ class _NoteReaderScreenState extends ConsumerState<NoteReaderScreen> {
             onPressed: () {
               _noteStoreProvider
                   .delete(widget.note)
-                  .then((value) => AppRoute.router.go('/'));
+                  .then((value) => AppRoute.router.go(AppRoute.root));
             },
             backgroundColor: AppStyle.accentColor,
             child: const Icon(Icons.delete),

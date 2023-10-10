@@ -101,7 +101,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
           Future<void> save = _isUpdate
               ? _noteStoreProvider.update(newNote)
               : _noteStoreProvider.add(newNote);
-          save.then((value) => AppRoute.router.go('/'));
+          save.then((value) => AppRoute.router.go(AppRoute.root));
         },
         backgroundColor: AppStyle.accentColor,
         child: const Icon(Icons.save),

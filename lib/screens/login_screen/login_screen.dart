@@ -20,7 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
           TextButton(
             onPressed: () async {
               FirebaseLogin.signInWithGoogle().then(
-                (value) => AppRoute.router.go('/'),
+                (value) => AppRoute.router.go(AppRoute.root),
               );
             },
             child: const Text('Google Sign in'),
